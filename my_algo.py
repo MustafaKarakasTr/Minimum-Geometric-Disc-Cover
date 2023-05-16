@@ -2,6 +2,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
+import random
 
 def distance_between_two_points(p1, p2):
     return math.sqrt( ((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2))
@@ -83,24 +84,35 @@ def circles_covering_points(points, radius):
     return centers
 
 
-points = [(5,0), (1,0), (0,1), (1,1)]
-radius = 2**(1/2)
 
-centers = circles_covering_points(points, radius)
-# print(distance_between_two_points((1,0), (1,3)))
-# print(is_center_valid((1,1), 4.9, [(4,5)]))
-print("centers")
-print(centers)
-# fig, ax = plt.subplots()
-# ax.set_xlim((-10, 10))
-# ax.set_ylim((-10, 10))
-# for point in points:
-#     plt.plot(point[0],point[1],'ro')
-# for center in centers:
-#     circle2 = plt.Circle((center[0],center[1]), radius, color='b', fill=False)
-#     ax.add_artist(circle2)
+number_of_test = 5
 
-# ax.set_aspect('equal')
-# # for circle in circles:
-# #     ax.add_artist(circle)
-# plt.show()
+for i in range(number_of_test):
+    number_of_points = random.randint(1,10)
+    points = []
+    for j in range(number_of_points):
+        x = random.randint(-10,10)
+        y = random.randint(-10,10)
+        points.append([x,y])
+    
+    radius = random.randint(1,10)
+
+    centers = circles_covering_points(points, radius)
+    # print(distance_between_two_points((1,0), (1,3)))
+    # print(is_center_valid((1,1), 4.9, [(4,5)]))
+    print("centers")
+    print(centers)
+    fig, ax = plt.subplots()
+    ax.set_xlim((-10, 10))
+    ax.set_ylim((-10, 10))
+    for point in points:
+        plt.plot(point[0],point[1],'ro')
+    for center in centers:
+        circle2 = plt.Circle((center[0],center[1]), radius, color='b', fill=False)
+        ax.add_artist(circle2)
+
+    ax.set_aspect('equal')
+    # for circle in circles:
+    #     ax.add_artist(circle)
+    # plt.show()
+    plt.savefig('my_plot'+str(i)+'.png')
