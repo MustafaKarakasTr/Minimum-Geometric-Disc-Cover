@@ -18,26 +18,20 @@ def circles_covering_points(points, radius):
     clusters = []
     centers = []
     covered_points = []
-    points_sorted_by_x = sorted(points, key=lambda x: x[0])
-    # uncovered_points = copy.deepcopy(points_sorted_by_x)
-    print(points_sorted_by_x)
-    # print(uncovered_points)
-    # for point in points_sorted_by_x:
-    i=0
+    uncovered_points = sorted(points, key=lambda x: x[0])
     # run till all the points are covered
-    points_length = len(points)
-    while(len(covered_points) != len(points)):
+    while(0 != len(uncovered_points)):
         # how to cover this point best way possible
-        point = points_sorted_by_x[0]
+        point = uncovered_points[0]
 
         points_covered_by_disc = [point]
         best_center_found = point
 
-        for j in range(1,len(points_sorted_by_x)):
-            point_candidate = points_sorted_by_x[j]
+        for j in range(1,len(uncovered_points)):
+            point_candidate = uncovered_points[j]
             
             # last possible point is reached. next point's x value is too big to be in the same disc
-            if(point_candidate[0] - point[0] > radius):
+            if(point_candidate[0] - point[0] > radius * 2):
                 break
             # find new center and record if the point_candidate can be covered by the same disc.
             # if the point_candidate can not be covered with the points_covered_by_disc, ignore it 
@@ -50,37 +44,22 @@ def circles_covering_points(points, radius):
 
                 min_y = min(candidate_points_covered_by_disc, key = lambda x: x[1])[1]
                 max_y = max(candidate_points_covered_by_disc, key = lambda x: x[1])[1]
-                print("min_x")
-                print(candidate_points_covered_by_disc)
-                print(min_x)
-                print(max_x)
-                print(min_y)
-                print(max_y)
                 
                 candidate_center = [(max_x + min_x) / 2 , (max_y + min_y) / 2]
-                print(candidate_center)
+
                 if(is_center_valid(candidate_center, radius, candidate_points_covered_by_disc)):
                     points_covered_by_disc = candidate_points_covered_by_disc
                     best_center_found = candidate_center
                 # else:
                     # center is not valid, it will try the next point
-            
 
-                
-                print("radius az verdim girmicek")
-
-        print("b")
         # save the best center
         centers.append(best_center_found)
         # save the covered points
         covered_points = covered_points + points_covered_by_disc
         for covered_point in points_covered_by_disc:
-            points_sorted_by_x.remove(covered_point)
-        # covered_points.append(points_sorted_by_x[i])
-        i = i+1
+            uncovered_points.remove(covered_point)
 
-
-    print(covered_points)
     return centers
 
 
@@ -88,31 +67,56 @@ def circles_covering_points(points, radius):
 number_of_test = 5
 
 for i in range(number_of_test):
-    number_of_points = random.randint(1,10)
+    number_of_points = 6
     points = []
+    # points = [[-10, -9], [-1, 6], [4, -10], [9, 8]]
     for j in range(number_of_points):
         x = random.randint(-10,10)
         y = random.randint(-10,10)
         points.append([x,y])
     
-    radius = random.randint(1,10)
+    radius = 3
 
     centers = circles_covering_points(points, radius)
-    # print(distance_between_two_points((1,0), (1,3)))
-    # print(is_center_valid((1,1), 4.9, [(4,5)]))
     print("centers")
     print(centers)
+    print("radius")
+    print(radius)
+
     fig, ax = plt.subplots()
-    ax.set_xlim((-10, 10))
-    ax.set_ylim((-10, 10))
+    ax.set_title('Radius: {} Diameter: {}'.format(radius,radius * 2), fontsize=15)
+    ax.set_xlim((-11, 11))
+    ax.set_ylim((-11, 11))
     for point in points:
         plt.plot(point[0],point[1],'ro')
+        
     for center in centers:
         circle2 = plt.Circle((center[0],center[1]), radius, color='b', fill=False)
+        # plt.plot(center[0],center[1],'r*')
+        # plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
         ax.add_artist(circle2)
 
     ax.set_aspect('equal')
     # for circle in circles:
     #     ax.add_artist(circle)
     # plt.show()
-    plt.savefig('my_plot'+str(i)+'.png')
+    plt.savefig('test_cases/my_plot'+str(i)+'.png')
+
+    for point in points:
+        plt.plot(point[0],point[1],'ro')
+        plt.text(point[0],point[1]+0.5,'({}, {})'.format(point[0], point[1]))
+    plt.savefig('test_cases/my_plot'+str(i)+'_1.png')
+    
+    for center in centers:
+        plt.plot(center[0],center[1],'r*')
+        plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
+    plt.savefig('test_cases/my_plot'+str(i)+'_2.png')
+    
+    for a in range(len(points)):
+        for b in range(a+1, len(points)):
+            length_between_two_points = distance_between_two_points(points[a], points[b])
+            plt.plot([points[a][0],points[b][0]] ,[points[a][1],points[b][1]], marker = 'o')
+            plt.text((points[a][0]+points[b][0])/2,(points[a][1]+points[b][1])/2+0.5,'{}'.format(round(length_between_two_points,2)))
+
+    
+    plt.savefig('test_cases/my_plot'+str(i)+'_3.png')
