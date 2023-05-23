@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import copy
 import random
-
+print(math.sqrt(1/2))
 def distance_between_two_points(p1, p2):
     return math.sqrt( ((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2))
 
@@ -63,22 +63,57 @@ def circles_covering_points(points, radius):
 
     return centers
 
+##########################################################
+def distance(p1, p2):
+    return math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
 
+def GHS(P):
+    H = set()
+    Disk_Centers = set()
+
+    for p in P:
+        v = math.floor(p[0] / math.sqrt(2))
+        h = math.floor(p[1] / math.sqrt(2))
+        print(v)
+        print(h)
+        print(H)
+
+        if (v, h) in H:
+            continue
+        elif p[0] >= (math.sqrt(2) * (v + 1.5) - 1) and ((v + 1, h) in H) and (distance(p, (math.sqrt(2) * (v + 1) + math.sqrt(1/2), math.sqrt(2) * h + math.sqrt(1/2))) <= 1):
+            continue
+        elif p[0] <= (math.sqrt(2) * (v - 0.5) + 1) and ((v - 1, h) in H) and (distance(p, (math.sqrt(2) * (v - 1) + math.sqrt(1/2), math.sqrt(2) * h + math.sqrt(1/2))) <= 1):
+            continue
+        elif p[1] >= (math.sqrt(2) * (h + 1.5) - 1) and ((v, h + 1) in H) and (distance(p, (math.sqrt(2) * v + math.sqrt(1/2), math.sqrt(2) * (h + 1) + math.sqrt(1/2))) <= 1):
+            continue
+        elif p[1] <= (math.sqrt(2) * (h - 0.5) + 1) and ((v, h - 1) in H) and (distance(p, (math.sqrt(2) * v + math.sqrt(1/2), math.sqrt(2) * (h - 1) + math.sqrt(1/2))) <= 1):
+            continue
+        else:
+            H.add((v, h))
+            Disk_Centers.add((math.sqrt(2) * v + math.sqrt(1/2), math.sqrt(2) * h + math.sqrt(1/2)))
+
+    return Disk_Centers
+##########################################################
 
 number_of_test = 5
 
 for i in range(number_of_test):
-    number_of_points = 6
+    number_of_points = 15
     points = []
     # points = [[-10, -9], [-1, 6], [4, -10], [9, 8]]
     for j in range(number_of_points):
-        x = random.randint(-10,10)
-        y = random.randint(-10,10)
+        # x = random.randint(-10,10)
+        # y = random.randint(-10,10)
+        x = random.uniform(0.0, 4.0)
+        y = random.uniform(0.0, 4.0)
         points.append([x,y])
-    
-    radius = 3
+    radius = 1.0
 
-    centers = circles_covering_points(points, radius)
+    # centers = GHS(points, radius)
+    centers = GHS(points)#, radius)
+    my_centers = circles_covering_points(points, radius)#, radius)
+
+
     print("centers")
     print(centers)
     print("radius")
@@ -86,8 +121,10 @@ for i in range(number_of_test):
 
     fig, ax = plt.subplots()
     ax.set_title('Radius: {} Diameter: {}'.format(radius,radius * 2), fontsize=15)
-    ax.set_xlim((-11, 11))
-    ax.set_ylim((-11, 11))
+    ax.set_xlim((-0.5, 4.5))
+    ax.set_ylim((-0.5, 4.5))
+    # ax.set_xlim((0, 2))
+    # ax.set_ylim((0, 2))
     for point in points:
         plt.plot(point[0],point[1],'ro')
         
@@ -97,27 +134,32 @@ for i in range(number_of_test):
         # plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
         ax.add_artist(circle2)
 
+    for center in my_centers:
+        circle2 = plt.Circle((center[0],center[1]), radius, color='g', fill=False)
+        # plt.plot(center[0],center[1],'r*')
+        # plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
+        ax.add_artist(circle2)
     ax.set_aspect('equal')
     # for circle in circles:
     #     ax.add_artist(circle)
     # plt.show()
     plt.savefig('test_cases/my_plot'+str(i)+'.png')
 
-    for point in points:
-        plt.plot(point[0],point[1],'ro')
-        plt.text(point[0],point[1]+0.5,'({}, {})'.format(point[0], point[1]))
-    plt.savefig('test_cases/my_plot'+str(i)+'_1.png')
+    # for point in points:
+    #     plt.plot(point[0],point[1],'ro')
+    #     plt.text(point[0],point[1]+0.5,'({}, {})'.format(point[0], point[1]))
+    # plt.savefig('test_cases/my_plot'+str(i)+'_1.png')
     
-    for center in centers:
-        plt.plot(center[0],center[1],'r*')
-        plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
-    plt.savefig('test_cases/my_plot'+str(i)+'_2.png')
+    # for center in centers:
+    #     plt.plot(center[0],center[1],'r*')
+    #     plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
+    # plt.savefig('test_cases/my_plot'+str(i)+'_2.png')
     
-    for a in range(len(points)):
-        for b in range(a+1, len(points)):
-            length_between_two_points = distance_between_two_points(points[a], points[b])
-            plt.plot([points[a][0],points[b][0]] ,[points[a][1],points[b][1]], marker = 'o')
-            plt.text((points[a][0]+points[b][0])/2,(points[a][1]+points[b][1])/2+0.5,'{}'.format(round(length_between_two_points,2)))
+    # for a in range(len(points)):
+    #     for b in range(a+1, len(points)):
+    #         length_between_two_points = distance_between_two_points(points[a], points[b])
+    #         plt.plot([points[a][0],points[b][0]] ,[points[a][1],points[b][1]], marker = 'o')
+    #         plt.text((points[a][0]+points[b][0])/2,(points[a][1]+points[b][1])/2+0.5,'{}'.format(round(length_between_two_points,2)))
 
     
-    plt.savefig('test_cases/my_plot'+str(i)+'_3.png')
+    # plt.savefig('test_cases/my_plot'+str(i)+'_3.png')
