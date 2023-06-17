@@ -15,11 +15,14 @@ def is_center_valid(center, radius, points_inside_disk):
     return True
 
 
-def my_algo(points, radius):
+def my_algo(points):
+    temp_radius = 1
     clusters = []
     centers = []
-    covered_points = []
     uncovered_points = sorted(points, key=lambda x: x[0])
+
+    counter = 0
+
     # run till all the points are covered
     while(0 != len(uncovered_points)):
         # how to cover this point best way possible
@@ -30,34 +33,38 @@ def my_algo(points, radius):
 
         for j in range(1,len(uncovered_points)):
             point_candidate = uncovered_points[j]
-            
+            print("counter")
+            print(counter)
+            counter = counter + 1
+
             # last possible point is reached. next point's x value is too big to be in the same disc
-            if(point_candidate[0] - point[0] > radius * 2):
+            if(point_candidate[0] - point[0] > temp_radius * 2):
                 break
             # find new center and record if the point_candidate can be covered by the same disc.
             # if the point_candidate can not be covered with the points_covered_by_disc, ignore it 
             else:
-                candidate_points_covered_by_disc = copy.deepcopy(points_covered_by_disc)
+                # candidate_points_covered_by_disc = copy.deepcopy(points_covered_by_disc)
                 # save the candidate point
-                candidate_points_covered_by_disc.append(point_candidate)
-                min_x = min(candidate_points_covered_by_disc, key = lambda x: x[0])[0]
-                max_x = max(candidate_points_covered_by_disc, key = lambda x: x[0])[0]
+                points_covered_by_disc.append(point_candidate)
+                min_x = min(points_covered_by_disc, key = lambda x: x[0])[0]
+                max_x = max(points_covered_by_disc, key = lambda x: x[0])[0]
 
-                min_y = min(candidate_points_covered_by_disc, key = lambda x: x[1])[1]
-                max_y = max(candidate_points_covered_by_disc, key = lambda x: x[1])[1]
+                min_y = min(points_covered_by_disc, key = lambda x: x[1])[1]
+                max_y = max(points_covered_by_disc, key = lambda x: x[1])[1]
                 
                 candidate_center = [(max_x + min_x) / 2 , (max_y + min_y) / 2]
 
-                if(is_center_valid(candidate_center, radius, candidate_points_covered_by_disc)):
-                    points_covered_by_disc = candidate_points_covered_by_disc
+                if(is_center_valid(candidate_center, temp_radius, points_covered_by_disc)):
+                    # points_covered_by_disc = points_covered_by_disc
                     best_center_found = candidate_center
-                # else:
+                else:
+                    points_covered_by_disc.pop()
                     # center is not valid, it will try the next point
+
 
         # save the best center
         centers.append(best_center_found)
         # save the covered points
-        covered_points = covered_points + points_covered_by_disc
         for covered_point in points_covered_by_disc:
             uncovered_points.remove(covered_point)
 
@@ -70,27 +77,28 @@ def distance(p1, p2):
 def GHS(P):
     H = set()
     Disk_Centers = set()
-
+    sqrt_2 = math.sqrt(2)
+    sqrt_0_5 = math.sqrt(1/2)
     for p in P:
-        v = math.floor(p[0] / math.sqrt(2))
-        h = math.floor(p[1] / math.sqrt(2))
-        print(v)
-        print(h)
-        print(H)
+        v = math.floor(p[0] / sqrt_2)
+        h = math.floor(p[1] / sqrt_2)
+        # print(v)
+        # print(h)
+        # print(H)
 
         if (v, h) in H:
             continue
-        elif p[0] >= (math.sqrt(2) * (v + 1.5) - 1) and ((v + 1, h) in H) and (distance(p, (math.sqrt(2) * (v + 1) + math.sqrt(1/2), math.sqrt(2) * h + math.sqrt(1/2))) <= 1):
+        elif p[0] >= (sqrt_2 * (v + 1.5) - 1) and ((v + 1, h) in H) and (distance(p, (sqrt_2 * (v + 1) + sqrt_0_5, sqrt_2 * h + sqrt_0_5)) <= 1):
             continue
-        elif p[0] <= (math.sqrt(2) * (v - 0.5) + 1) and ((v - 1, h) in H) and (distance(p, (math.sqrt(2) * (v - 1) + math.sqrt(1/2), math.sqrt(2) * h + math.sqrt(1/2))) <= 1):
+        elif p[0] <= (sqrt_2 * (v - 0.5) + 1) and ((v - 1, h) in H) and (distance(p, (sqrt_2 * (v - 1) + sqrt_0_5, sqrt_2 * h + sqrt_0_5)) <= 1):
             continue
-        elif p[1] >= (math.sqrt(2) * (h + 1.5) - 1) and ((v, h + 1) in H) and (distance(p, (math.sqrt(2) * v + math.sqrt(1/2), math.sqrt(2) * (h + 1) + math.sqrt(1/2))) <= 1):
+        elif p[1] >= (sqrt_2 * (h + 1.5) - 1) and ((v, h + 1) in H) and (distance(p, (sqrt_2 * v + sqrt_0_5, sqrt_2 * (h + 1) + sqrt_0_5)) <= 1):
             continue
-        elif p[1] <= (math.sqrt(2) * (h - 0.5) + 1) and ((v, h - 1) in H) and (distance(p, (math.sqrt(2) * v + math.sqrt(1/2), math.sqrt(2) * (h - 1) + math.sqrt(1/2))) <= 1):
+        elif p[1] <= (sqrt_2 * (h - 0.5) + 1) and ((v, h - 1) in H) and (distance(p, (sqrt_2 * v + sqrt_0_5, sqrt_2 * (h - 1) + sqrt_0_5)) <= 1):
             continue
         else:
             H.add((v, h))
-            Disk_Centers.add((math.sqrt(2) * v + math.sqrt(1/2), math.sqrt(2) * h + math.sqrt(1/2)))
+            Disk_Centers.add((sqrt_2 * v + sqrt_0_5, sqrt_2 * h + sqrt_0_5))
 
     return Disk_Centers
 ##########################################################
