@@ -83,11 +83,8 @@ def distance(p1, p2):
 def GHS(P):
     H = set()
     Disk_Centers = set()
-    diagonal = 2 * (radius * radius)
-    half = radius / 2
-    half_more = radius + half
-    sqrt_2 = math.sqrt(diagonal)
-    sqrt_0_5 = math.sqrt(1/diagonal)
+    sqrt_2 = math.sqrt(2)
+    sqrt_0_5 = math.sqrt(1/2)
     for p in P:
         v = math.floor(p[0] / sqrt_2)
         h = math.floor(p[1] / sqrt_2)
@@ -97,13 +94,13 @@ def GHS(P):
 
         if (v, h) in H:
             continue
-        elif p[0] >= (sqrt_2 * (v + half_more) - radius) and ((v + radius, h) in H) and (distance(p, (sqrt_2 * (v + radius) + sqrt_0_5, sqrt_2 * h + sqrt_0_5)) <= radius):
+        elif p[0] >= (sqrt_2 * (v + 1.5) - 1) and ((v + 1, h) in H) and (distance(p, (sqrt_2 * (v + 1) + sqrt_0_5, sqrt_2 * h + sqrt_0_5)) <= 1):
             continue
-        elif p[0] <= (sqrt_2 * (v - half) + radius) and ((v - radius, h) in H) and (distance(p, (sqrt_2 * (v - radius) + sqrt_0_5, sqrt_2 * h + sqrt_0_5)) <= radius):
+        elif p[0] <= (sqrt_2 * (v - 0.5) + 1) and ((v - 1, h) in H) and (distance(p, (sqrt_2 * (v - 1) + sqrt_0_5, sqrt_2 * h + sqrt_0_5)) <= 1):
             continue
-        elif p[1] >= (sqrt_2 * (h + half_more) - radius) and ((v, h + radius) in H) and (distance(p, (sqrt_2 * v + sqrt_0_5, sqrt_2 * (h + radius) + sqrt_0_5)) <= radius):
+        elif p[1] >= (sqrt_2 * (h + 1.5) - 1) and ((v, h + 1) in H) and (distance(p, (sqrt_2 * v + sqrt_0_5, sqrt_2 * (h + 1) + sqrt_0_5)) <= 1):
             continue
-        elif p[1] <= (sqrt_2 * (h - half) + radius) and ((v, h - radius) in H) and (distance(p, (sqrt_2 * v + sqrt_0_5, sqrt_2 * (h - radius) + sqrt_0_5)) <= radius):
+        elif p[1] <= (sqrt_2 * (h - 0.5) + 1) and ((v, h - 1) in H) and (distance(p, (sqrt_2 * v + sqrt_0_5, sqrt_2 * (h - 1) + sqrt_0_5)) <= 1):
             continue
         else:
             H.add((v, h))
