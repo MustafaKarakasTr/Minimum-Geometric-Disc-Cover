@@ -270,16 +270,16 @@ button.pack()
 
 frame2 = tk.Frame(window)
 frame2.pack(side="left")
-button2 = tk.Button(frame2, text="PTAS Algorithm", command=lambda:handle_button_click(GHS))
+button2 = tk.Button(frame1, text="PTAS Algorithm", command=lambda:handle_button_click(GHS))
 # button2.grid(row=0,column=1),
 button2.pack()
 
 
 frame3 = tk.Frame(window)
-frame3.pack(side="right")
-reset = tk.Button(frame3, text="Reset Solution", command=lambda:remove_elements())
+frame3.pack(side="left")
+reset = tk.Button(frame3, text="Remove Discs", command=lambda:remove_elements())
 reset.pack()
-resetPoints = tk.Button(frame3, text="Reset Points", command=lambda:remove_points())
+resetPoints = tk.Button(frame3, text="Remove Points", command=lambda:remove_points())
 resetPoints.pack()
 
 # reset.grid(row=2,column=5)
@@ -298,6 +298,7 @@ frame2.pack()
 
 textbox = tk.textbox = tk.Entry(frame2)
 textbox.pack(side="left")
+
 uploadButton = tk.Button(frame2, text="Upload", command=lambda:uploadOnClick())
 uploadButton.pack()
 # label4 = tk.Label(frame2, text="Label 4")
