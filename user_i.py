@@ -8,7 +8,7 @@ import copy
 import ast
 
 selected_algo = None
-radius = 1
+radius = 2
 point_coordinates = []
 
 #######################################################################
@@ -23,6 +23,7 @@ def is_center_valid(center, radius, points_inside_disk):
     return True
 
 def my_algo(points):
+    temp_radius = 1
     clusters = []
     centers = []
     uncovered_points = sorted(points, key=lambda x: x[0])
@@ -44,7 +45,7 @@ def my_algo(points):
             counter = counter + 1
 
             # last possible point is reached. next point's x value is too big to be in the same disc
-            if(point_candidate[0] - point[0] > radius * 2):
+            if(point_candidate[0] - point[0] > temp_radius * 2):
                 break
             # find new center and record if the point_candidate can be covered by the same disc.
             # if the point_candidate can not be covered with the points_covered_by_disc, ignore it 
@@ -60,7 +61,7 @@ def my_algo(points):
                 
                 candidate_center = [(max_x + min_x) / 2 , (max_y + min_y) / 2]
 
-                if(is_center_valid(candidate_center, radius, points_covered_by_disc)):
+                if(is_center_valid(candidate_center, temp_radius, points_covered_by_disc)):
                     # points_covered_by_disc = points_covered_by_disc
                     best_center_found = candidate_center
                 else:
@@ -188,6 +189,13 @@ def append_to_file(text):
     file1.write("\n")
     file1.close()
 
+def changeRadius():
+    global radius
+    global radiusText
+    radius = float(radiusText.get())
+
+
+
 
 def uploadOnClick():
     pointsTaken = takeInputFromTextBox()
@@ -198,6 +206,19 @@ def uploadOnClick():
         point_coordinates = pointsTaken
         remove_elements()
 
+def multiply_input(coordinates, multiplier):
+    multiplied = []
+    for coordinate in coordinates:
+        multiplied.append((coordinate[0] * multiplier, coordinate[1] * multiplier))
+    
+
+    print("coordinates")
+
+    print(coordinates)
+    
+    print(multiplied)
+
+    return multiplied
 
 # Function to handle button click event
 def handle_button_click(algo):
@@ -206,17 +227,17 @@ def handle_button_click(algo):
 
     
     selected_algo = algo
-
-    centers = selected_algo(point_coordinates)
-    
-    drawCenters(centers)
+    decreased_coordinates = multiply_input(point_coordinates, 1/radius)
+    centers = selected_algo(decreased_coordinates)
+    increased_centers = multiply_input(list(centers), radius)
+    drawCenters(increased_centers)
     label.config(text="Number of discs: " + str(len(centers)))
     
     append_to_file("Points:")
     append_to_file(str(point_coordinates))
     
     append_to_file("centers")
-    append_to_file(str(centers))
+    append_to_file(str(increased_centers))
     
     plt.draw()
     # Get the text from the textbox
@@ -248,6 +269,18 @@ cid = fig.canvas.mpl_connect('button_press_event', onclick)
 # Create a Tkinter window
 window = tk.Tk()
 window.title("Matplotlib with Textbox")
+
+
+frameRadius = tk.Frame(window)
+frameRadius.pack()
+
+radiusText = tk.textbox = tk.Entry(frameRadius)
+radiusText.pack(side="left")
+
+radiusChange = tk.Button(frameRadius, text="Radius", command=lambda:changeRadius())
+radiusChange.pack()
+
+
 # Create a canvas widget and display the plot
 canvas = FigureCanvasTkAgg(fig, master=window)
 canvas.draw()
