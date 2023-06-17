@@ -5,24 +5,30 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import math
 import copy
+import ast
 
 selected_algo = None
 radius = 1
+point_coordinates = []
 
 #######################################################################
 def distance_between_two_points(p1, p2):
-    return math.sqrt( ((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2))
+    return math.sqrt(((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2))
 
 def is_center_valid(center, radius, points_inside_disk):
     for point in points_inside_disk:
+        print("AA")
         if(distance_between_two_points(center, point) > radius):
             return False
     return True
+
 def my_algo(points):
     clusters = []
     centers = []
-    covered_points = []
     uncovered_points = sorted(points, key=lambda x: x[0])
+
+    counter = 0
+
     # run till all the points are covered
     while(0 != len(uncovered_points)):
         # how to cover this point best way possible
@@ -33,7 +39,10 @@ def my_algo(points):
 
         for j in range(1,len(uncovered_points)):
             point_candidate = uncovered_points[j]
-            
+            print("counter")
+            print(counter)
+            counter = counter + 1
+
             # last possible point is reached. next point's x value is too big to be in the same disc
             if(point_candidate[0] - point[0] > radius * 2):
                 break
@@ -58,10 +67,10 @@ def my_algo(points):
                     points_covered_by_disc.pop()
                     # center is not valid, it will try the next point
 
+
         # save the best center
         centers.append(best_center_found)
         # save the covered points
-        covered_points = covered_points + points_covered_by_disc
         for covered_point in points_covered_by_disc:
             uncovered_points.remove(covered_point)
 
@@ -109,7 +118,7 @@ def GHS(P):
 # x_coords = []
 # y_coords = []
 
-point_coordinates = []
+
 
 # Define the plot limits
 x_min, x_max = 0, 10  # Set your desired limits for the x-axis
@@ -122,6 +131,21 @@ ax.set_ylim(y_min, y_max)
 
 # Prompt the user to click on the plot to select points
 print("Click on the plot to select points. Right-click or press Enter to finish input.")
+
+
+
+def takeInputFromTextBox():
+    
+    string_input = textbox.get()
+
+    if(string_input == ""):
+        return []
+    # Convert tuple strings to actual tuples
+    result = list(ast.literal_eval(string_input))
+
+    print(result)
+    print(result[0])
+    return result
 
 def onclick(event):
     # Check if the user right-clicked or pressed Enter
@@ -157,16 +181,42 @@ def drawPoints(points):
         ax.scatter(point[0], point[1], color='red')
     plt.draw()
 
+def append_to_file(text):
+    # Append-adds at last
+    file1 = open("log/log.txt", "a")  # append mode
+    file1.write(text)
+    file1.write("\n")
+    file1.close()
+
+
+def uploadOnClick():
+    pointsTaken = takeInputFromTextBox()
+    global point_coordinates
+    print(point_coordinates)
+    if(len(pointsTaken) != 0):
+        point_coordinates.clear()
+        point_coordinates = pointsTaken
+        remove_elements()
+
+
 # Function to handle button click event
 def handle_button_click(algo):
+    # print(point_coordinates)
+
+
+    
     selected_algo = algo
+
     centers = selected_algo(point_coordinates)
     
     drawCenters(centers)
     label.config(text="Number of discs: " + str(len(centers)))
     
-    print("centers")
-    print(centers)
+    append_to_file("Points:")
+    append_to_file(str(point_coordinates))
+    
+    append_to_file("centers")
+    append_to_file(str(centers))
     
     plt.draw()
     # Get the text from the textbox
@@ -176,10 +226,15 @@ def handle_button_click(algo):
     # print("Entered text:", text)
 
 def remove_elements():
+    global point_coordinates
     ax.cla()
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
     drawPoints(point_coordinates)
+
+
+
+
 
 cid = fig.canvas.mpl_connect('button_press_event', onclick)
 
@@ -195,18 +250,54 @@ canvas.get_tk_widget().pack()
 # entry = tk.Entry(window)
 # entry.pack()
 
+
+frame1 = tk.Frame(window)
+frame1.pack(side="left")
+
+
 # Create a button widget
-button = tk.Button(window, text="Brute Force Algorithm", command=lambda: handle_button_click(my_algo))
-button2 = tk.Button(window, text="PTAS Algorithm", command=lambda:handle_button_click(GHS))
 
-reset = tk.Button(window, text="Reset", command=lambda:remove_elements())
-label = tk.Label(window, text="")
-
+button = tk.Button(frame1, text="Brute Force Algorithm", command=lambda: handle_button_click(my_algo))
 
 button.pack()
+
+frame2 = tk.Frame(window)
+frame2.pack(side="left")
+button2 = tk.Button(frame2, text="PTAS Algorithm", command=lambda:handle_button_click(GHS))
+# button2.grid(row=0,column=1),
 button2.pack()
+
+
+frame3 = tk.Frame(window)
+frame3.pack(side="right")
+reset = tk.Button(frame3, text="Reset", command=lambda:remove_elements())
 reset.pack()
+
+# reset.grid(row=2,column=5)
+frame4 = tk.Frame(window)
+frame4.pack(side="left")
+label = tk.Label(frame4, text="")
 label.pack()
+
+frame5 = tk.Frame(window)
+frame5.pack()
+textInput = tk.Label(frame5, text="Points Format: {(x1, y1), (x2,y2)}")
+textInput.pack(side="top")
+
+frame2 = tk.Frame(window)
+frame2.pack()
+
+textbox = tk.textbox = tk.Entry(frame2)
+textbox.pack(side="left")
+uploadButton = tk.Button(frame2, text="Upload", command=lambda:uploadOnClick())
+uploadButton.pack()
+# label4 = tk.Label(frame2, text="Label 4")
+# label4.pack(side="left")
+
+# button.pack()
+# button2.pack()
+# reset.pack()
+# label.pack()
 # Start the Tkinter event loop
 window.mainloop()
 
