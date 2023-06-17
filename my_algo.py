@@ -15,7 +15,7 @@ def is_center_valid(center, radius, points_inside_disk):
     return True
 
 
-def circles_covering_points(points, radius):
+def my_algo(points, radius):
     clusters = []
     centers = []
     covered_points = []
@@ -111,7 +111,7 @@ for i in range(number_of_test):
 
     # centers = GHS(points, radius)
     centers = GHS(points)#, radius)
-    my_centers = circles_covering_points(points, radius)#, radius)
+    my_centers = my_algo(points, radius)#, radius)
 
 
     print("centers")
