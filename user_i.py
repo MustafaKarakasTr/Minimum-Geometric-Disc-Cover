@@ -40,21 +40,22 @@ def my_algo(points):
             # find new center and record if the point_candidate can be covered by the same disc.
             # if the point_candidate can not be covered with the points_covered_by_disc, ignore it 
             else:
-                candidate_points_covered_by_disc = copy.deepcopy(points_covered_by_disc)
+                # candidate_points_covered_by_disc = copy.deepcopy(points_covered_by_disc)
                 # save the candidate point
-                candidate_points_covered_by_disc.append(point_candidate)
-                min_x = min(candidate_points_covered_by_disc, key = lambda x: x[0])[0]
-                max_x = max(candidate_points_covered_by_disc, key = lambda x: x[0])[0]
+                points_covered_by_disc.append(point_candidate)
+                min_x = min(points_covered_by_disc, key = lambda x: x[0])[0]
+                max_x = max(points_covered_by_disc, key = lambda x: x[0])[0]
 
-                min_y = min(candidate_points_covered_by_disc, key = lambda x: x[1])[1]
-                max_y = max(candidate_points_covered_by_disc, key = lambda x: x[1])[1]
+                min_y = min(points_covered_by_disc, key = lambda x: x[1])[1]
+                max_y = max(points_covered_by_disc, key = lambda x: x[1])[1]
                 
                 candidate_center = [(max_x + min_x) / 2 , (max_y + min_y) / 2]
 
-                if(is_center_valid(candidate_center, radius, candidate_points_covered_by_disc)):
-                    points_covered_by_disc = candidate_points_covered_by_disc
+                if(is_center_valid(candidate_center, radius, points_covered_by_disc)):
+                    # points_covered_by_disc = points_covered_by_disc
                     best_center_found = candidate_center
-                # else:
+                else:
+                    points_covered_by_disc.pop()
                     # center is not valid, it will try the next point
 
         # save the best center
