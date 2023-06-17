@@ -8,7 +8,7 @@ import copy
 import ast
 
 selected_algo = None
-radius = 2
+radius = 1
 point_coordinates = []
 
 #######################################################################
@@ -194,9 +194,6 @@ def changeRadius():
     global radiusText
     radius = float(radiusText.get())
 
-
-
-
 def uploadOnClick():
     pointsTaken = takeInputFromTextBox()
     global point_coordinates
@@ -274,12 +271,39 @@ window.title("Matplotlib with Textbox")
 frameRadius = tk.Frame(window)
 frameRadius.pack()
 
+
+labelRadius = tk.Label(frameRadius, text="Radius: ")
+labelRadius.pack(side="left")
+
+
 radiusText = tk.textbox = tk.Entry(frameRadius)
+radiusText.insert(0,"1.0")
 radiusText.pack(side="left")
 
-radiusChange = tk.Button(frameRadius, text="Radius", command=lambda:changeRadius())
+radiusChange = tk.Button(frameRadius, text="Set Radius", command=lambda:changeRadius())
 radiusChange.pack()
 
+frame6 = tk.Frame(window)
+
+
+
+
+inputPoints = tk.Label(frame6, text="Input Points: ")
+inputPoints.pack(side="left")
+
+textbox = tk.textbox = tk.Entry(frame6)
+textbox.pack(side="left")
+
+
+uploadButton = tk.Button(frame6, text="Upload", command=lambda:uploadOnClick())
+uploadButton.pack()
+frame6.pack()
+
+
+frame7 = tk.Frame(window)
+textInput = tk.Label(frame7, text="Points Format: {(x1, y1), (x2,y2)}")
+textInput.pack(side="left")
+frame7.pack()
 
 # Create a canvas widget and display the plot
 canvas = FigureCanvasTkAgg(fig, master=window)
@@ -309,7 +333,7 @@ button2.pack()
 
 
 frame3 = tk.Frame(window)
-frame3.pack(side="left")
+frame3.pack(side="right")
 reset = tk.Button(frame3, text="Remove Discs", command=lambda:remove_elements())
 reset.pack()
 resetPoints = tk.Button(frame3, text="Remove Points", command=lambda:remove_points())
@@ -317,23 +341,13 @@ resetPoints.pack()
 
 # reset.grid(row=2,column=5)
 frame4 = tk.Frame(window)
-frame4.pack(side="left")
+frame4.pack()
 label = tk.Label(frame4, text="")
 label.pack()
 
-frame5 = tk.Frame(window)
-frame5.pack()
-textInput = tk.Label(frame5, text="Points Format: {(x1, y1), (x2,y2)}")
-textInput.pack(side="top")
 
-frame2 = tk.Frame(window)
-frame2.pack()
 
-textbox = tk.textbox = tk.Entry(frame2)
-textbox.pack(side="left")
 
-uploadButton = tk.Button(frame2, text="Upload", command=lambda:uploadOnClick())
-uploadButton.pack()
 # label4 = tk.Label(frame2, text="Label 4")
 # label4.pack(side="left")
 
