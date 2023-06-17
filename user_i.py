@@ -233,6 +233,13 @@ def remove_elements():
     drawPoints(point_coordinates)
 
 
+def remove_points():
+    global point_coordinates
+    point_coordinates = []
+    ax.cla()
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+    plt.draw()
 
 
 
@@ -270,8 +277,10 @@ button2.pack()
 
 frame3 = tk.Frame(window)
 frame3.pack(side="right")
-reset = tk.Button(frame3, text="Reset", command=lambda:remove_elements())
+reset = tk.Button(frame3, text="Reset Solution", command=lambda:remove_elements())
 reset.pack()
+resetPoints = tk.Button(frame3, text="Reset Points", command=lambda:remove_points())
+resetPoints.pack()
 
 # reset.grid(row=2,column=5)
 frame4 = tk.Frame(window)
