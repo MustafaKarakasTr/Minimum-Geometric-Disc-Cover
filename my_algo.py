@@ -1,10 +1,10 @@
 import math
-
+import time
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
 import random
-print(math.sqrt(1/2))
+# print(math.sqrt(1/2))
 def distance_between_two_points(p1, p2):
     return math.sqrt( ((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2))
 
@@ -33,8 +33,8 @@ def my_algo(points):
 
         for j in range(1,len(uncovered_points)):
             point_candidate = uncovered_points[j]
-            print("counter")
-            print(counter)
+            # print("counter")
+            # print(counter)
             counter = counter + 1
 
             # last possible point is reached. next point's x value is too big to be in the same disc
@@ -105,32 +105,69 @@ def GHS(P):
 
 number_of_test = 5
 
-for i in range(number_of_test):
-    number_of_points = 15
+times_taken_by_ghs = []
+number_of_discs_ghs = []
+times_taken_by_my_algo = []
+number_of_discs_my_algo = []
+
+number_of_points_arr = [100,200,500,1000,1500,2000,2000,2500,2500,3000,3000,3500,3500]
+for i in range(len(number_of_points_arr)):
+    number_of_points = number_of_points_arr[i]
     points = []
     # points = [[-10, -9], [-1, 6], [4, -10], [9, 8]]
     for j in range(number_of_points):
         # x = random.randint(-10,10)
         # y = random.randint(-10,10)
-        x = random.uniform(0.0, 4.0)
-        y = random.uniform(0.0, 4.0)
+        x = random.uniform(0.0, 50.0)
+        y = random.uniform(0.0, 50.0)
         points.append([x,y])
     radius = 1.0
+    
+    print("points")
+    print(points)
 
     # centers = GHS(points, radius)
+    st = time.time()
     centers = GHS(points)#, radius)
-    my_centers = my_algo(points, radius)#, radius)
+    et = time.time()
+    print("number_of_points:")
+    print(number_of_points)
+    print("")
 
+    print("time taken by GHS: ")
+    time_dif = et-st
+    times_taken_by_ghs.append(time_dif)
+    number_of_discs_ghs.append(len(centers))
+    print(et-st)
 
-    print("centers")
+    print("\nCenters:")
     print(centers)
-    print("radius")
-    print(radius)
+    print("\n")
+
+    st = time.time()
+    my_centers = my_algo(points)#, radius)
+    et = time.time()
+    time_dif = et-st
+    times_taken_by_my_algo.append(time_dif)
+    number_of_discs_my_algo.append(len(my_centers))
+    print("")
+
+    print("time taken by my_algo: ")
+    print(et-st)
+    print("\nCenters:")
+    print(my_centers)
+    print("\n")
+
+
+    # print("centers")
+    # print(centers)
+    # print("radius")
+    # print(radius)
 
     fig, ax = plt.subplots()
     ax.set_title('Radius: {} Diameter: {}'.format(radius,radius * 2), fontsize=15)
-    ax.set_xlim((-0.5, 4.5))
-    ax.set_ylim((-0.5, 4.5))
+    ax.set_xlim((-0.5, 51))
+    ax.set_ylim((-0.5, 51))
     # ax.set_xlim((0, 2))
     # ax.set_ylim((0, 2))
     for point in points:
@@ -142,6 +179,19 @@ for i in range(number_of_test):
         # plt.text(center[0],center[1]-0.5,'({}, {})'.format(center[0], center[1]))
         ax.add_artist(circle2)
 
+    ax.set_aspect('equal')
+    # for circle in circles:
+    #     ax.add_artist(circle)
+    # plt.show()
+    plt.savefig('test_cases/ghs_'+str(i)+'_'+str(number_of_points)+'.png')
+
+
+    fig, ax = plt.subplots()
+    ax.set_title('Radius: {} Diameter: {}'.format(radius,radius * 2), fontsize=15)
+    ax.set_xlim((-0.5, 21))
+    ax.set_ylim((-0.5, 21))
+    for point in points:
+        plt.plot(point[0],point[1],'ro')
     for center in my_centers:
         circle2 = plt.Circle((center[0],center[1]), radius, color='g', fill=False)
         # plt.plot(center[0],center[1],'r*')
@@ -151,7 +201,26 @@ for i in range(number_of_test):
     # for circle in circles:
     #     ax.add_artist(circle)
     # plt.show()
-    plt.savefig('test_cases/my_plot'+str(i)+'.png')
+    plt.savefig('test_cases/my_algo_'+str(i)+'_'+str(number_of_points)+'.png')
+    
+    print("Results:")
+    print("Number of points:")
+    
+    print(number_of_points_arr)
+
+    print("number_of_discs_my_algo")
+    print(number_of_discs_my_algo)
+
+    print("number_of_discs_ghs")
+    print(number_of_discs_ghs)
+
+    print("Time taken my_algo:")
+    print(times_taken_by_my_algo)
+    
+    print("Time taken GHS:")
+    print(times_taken_by_ghs)
+
+
 
     # for point in points:
     #     plt.plot(point[0],point[1],'ro')
